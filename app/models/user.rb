@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :followed_users, through: :followed_relationships, source: :follower
 
   has_many :ownerships , foreign_key: "user_id", dependent: :destroy
-  has_many :items ,through: :ownerships
+  has_many :items, through: :ownerships
 
   has_many :wants, class_name: "Want", foreign_key: "user_id", dependent: :destroy
   has_many :want_items , through: :wants, source: :item
@@ -36,28 +36,33 @@ class User < ActiveRecord::Base
 
   ## TODO 実装
   def have(item)
-    have_items.find_or_create_by(user_id: item.id)
+    # have_items.find_or_create_by(user_id: item.id)
+    haves.find_or_create_by(item_id: item.id)
   end
 
   def unhave(item)
-    have_item = have_items.find_by(user_id: item.id)
-    have_item.destroy if have_item
+    # have_item = have_items.find_by(user_id: item.id)
+    have = haves.find_by(item_id: item.id)
+    have.destroy if have
   end
 
   def have?(item)
-    items.include?(item)
+    # items.include?(item)
+    have_items.include(item)
   end
 
   def want(item)
-    want_items.find_or_create_by(user_id: item.id)
+    # want_items.find_or_create_by(user_id: item.id)
+    wants.find_or_create_by(item_id: item.id)
   end
 
   def unwant(item)
-    want_item = want_items.find_by(user_id: item.id)
-    want_item.destroy if want_item
+    # want_item = want_items.find_by(user_id: item.id)
+    want = wants.find_by(item_id: item.id)
+    want.destroy if want
   end
 
   def want?(item)
-    items.include?(item)
+    want_items.include?(item)
   end
 end
